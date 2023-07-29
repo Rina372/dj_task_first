@@ -1,4 +1,6 @@
+from django.contrib.sites import requests
 from django.shortcuts import render
+from django.http import HttpResponse
 
 DATA = {
     'omlet': {
@@ -16,8 +18,34 @@ DATA = {
         'сыр, ломтик': 1,
         'помидор, ломтик': 1,
     },
+
+
     # можете добавить свои рецепты ;)
 }
+
+def index(request):
+    return render(request, 'calculator/index.html')
+
+def dishes(request, dish):
+    num_dish = int(request.GET.get('servings', 1))
+    ready_dish = DATA[dish]
+    dish_cook = {}
+    for k, v in ready_dish.items():
+        dish_cook[k] = v * num_dish
+    context = {
+        'recipe': dish_cook,
+        'num_dish': num_dish,
+    }
+    return render(request, 'calculator/dishes.html', context)
+
+def pasta(request):
+    return dishes(request, 'pasta')
+
+def omlet(request):
+    return dishes(request, 'omlet')
+
+def buter(request):
+    return dishes(request, 'buter')
 
 # Напишите ваш обработчик. Используйте DATA как источник данных
 # Результат - render(request, 'calculator/index.html', context)
